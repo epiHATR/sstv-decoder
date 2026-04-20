@@ -1,7 +1,7 @@
 {
-  "name": "SSTV Decoder - Real-time Slow Scan Television Decoder",
-  "short_name": "SSTV Decoder",
-  "description": "Decode amateur radio SSTV signals in real-time from your microphone. Supports Robot36 mode with professional DSP processing.",
+  "name": "SSTV Tools",
+  "short_name": "SSTV Tools",
+  "description": "Encoding/Decoding SSTV signal — encode and decode amateur radio SSTV in the browser (microphone, audio files, images).",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0d1117",
@@ -27,7 +27,7 @@
       "src": "/og-image.png",
       "sizes": "1200x630",
       "type": "image/png",
-      "label": "SSTV Decoder Interface"
+      "label": "SSTV Tools interface"
     }
   ]
 }

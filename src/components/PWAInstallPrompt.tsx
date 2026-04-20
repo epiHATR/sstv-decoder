@@ -1,6 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useCompactActions } from '@/hooks/useCompactActions';
+import { CompactActionButton } from '@/components/CompactActionButton';
+import {
+  IconDownload,
+  IconCheck,
+  IconClock,
+  IconEyeOff,
+} from '@/components/action-icons';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -12,6 +20,7 @@ export default function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+  const compact = useCompactActions();
 
   useEffect(() => {
     // Check if already installed (standalone mode)
@@ -105,7 +114,7 @@ export default function PWAInstallPrompt() {
           {/* Content */}
           <div className="flex-1 min-w-0">
             <h3 className="text-white font-semibold text-base mb-1">
-              Install SSTV Decoder
+              Install SSTV Tools
             </h3>
             <p className="text-gray-300 text-sm mb-3">
               {isIOS 
@@ -133,39 +142,82 @@ export default function PWAInstallPrompt() {
               </div>
             )}
 
-            {/* Buttons */}
-            <div className="flex flex-wrap gap-2">
+            {/* Buttons — icon-only when compact (narrow or standalone) */}
+            <div className={compact ? 'flex flex-row flex-wrap justify-start gap-2' : 'flex flex-wrap gap-2'}>
               {!isIOS && deferredPrompt && (
-                <button
-                  onClick={handleInstallClick}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors"
-                >
-                  Install Now
-                </button>
+                compact ? (
+                  <CompactActionButton
+                    variant="primary"
+                    icon={<IconDownload />}
+                    label="Install now"
+                    onClick={() => void handleInstallClick()}
+                    className="!border-green-700 !bg-green-600 hover:!bg-green-700 !text-white shadow-none"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => void handleInstallClick()}
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors"
+                  >
+                    Install Now
+                  </button>
+                )
               )}
-              
-              {isIOS && (
+
+              {isIOS &&
+                (compact ? (
+                  <CompactActionButton
+                    variant="primary"
+                    icon={<IconCheck />}
+                    label="Got it"
+                    onClick={handleDismiss}
+                    className="!border-green-700 !bg-green-600 hover:!bg-green-700 !text-white shadow-none"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleDismiss}
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors"
+                  >
+                    Got it
+                  </button>
+                ))}
+
+              {compact ? (
+                <CompactActionButton
+                  variant="secondary"
+                  icon={<IconClock />}
+                  label="Maybe later"
+                  onClick={handleMaybeLater}
+                  className="!border-gray-600 !bg-gray-700 hover:!bg-gray-600 !text-white shadow-none"
+                />
+              ) : (
                 <button
-                  onClick={handleDismiss}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors"
+                  type="button"
+                  onClick={handleMaybeLater}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium text-sm transition-colors"
                 >
-                  Got it
+                  Maybe Later
                 </button>
               )}
 
-              <button
-                onClick={handleMaybeLater}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium text-sm transition-colors"
-              >
-                Maybe Later
-              </button>
-              
-              <button
-                onClick={handleDismiss}
-                className="px-4 py-2 text-gray-400 hover:text-white text-sm transition-colors"
-              >
-                Don&apos;t Show Again
-              </button>
+              {compact ? (
+                <CompactActionButton
+                  variant="ghost"
+                  icon={<IconEyeOff />}
+                  label={"Don't show again"}
+                  onClick={handleDismiss}
+                  className="!text-gray-300 hover:!bg-white/10 hover:!text-white shadow-none"
+                />
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleDismiss}
+                  className="px-4 py-2 text-gray-400 hover:text-white text-sm transition-colors"
+                >
+                  Don&apos;t Show Again
+                </button>
+              )}
             </div>
           </div>
 

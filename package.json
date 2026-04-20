@@ -38,7 +38,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "npx serve@latest out",
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -63,6 +63,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
+    "baseline-browser-mapping": "^2.10.20",
     "eslint": "^8",
     "eslint-config-next": "^15.0.0",
     "jest": "^30.2.0",

@@ -1,8 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Fab from '@mui/material/Fab';
 import SettingsIcon from '@mui/icons-material/Settings';
+import ThemeToggle from '@/components/ThemeToggle';
+import { useCompactActions } from '@/hooks/useCompactActions';
+import { CompactActionButton } from '@/components/CompactActionButton';
+import { IconClose } from '@/components/action-icons';
 
 export type SSTVMode = 'ROBOT36' | 'ROBOT72' | 'SCOTTIE_S1' | 'SCOTTIE_S2' | 'PD120' | 'PD160' | 'PD180';
 
@@ -10,10 +14,39 @@ interface SettingsPanelProps {
   currentMode: SSTVMode;
   onModeChange: (mode: SSTVMode) => void;
   disabled?: boolean;
+  /** When set with `onSettingsOpenChange`, modal open state is controlled by parent (e.g. header gear). */
+  settingsOpen?: boolean;
+  onSettingsOpenChange?: (open: boolean) => void;
+  /** Hide bottom-right FAB + theme (parent provides header controls). */
+  hideFloatingChrome?: boolean;
 }
 
-export default function SettingsPanel({ currentMode, onModeChange, disabled = false }: SettingsPanelProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function SettingsPanel({
+  currentMode,
+  onModeChange,
+  disabled = false,
+  settingsOpen: controlledOpen,
+  onSettingsOpenChange,
+  hideFloatingChrome = false,
+}: SettingsPanelProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const compact = useCompactActions();
+
+  const controlled = controlledOpen !== undefined && onSettingsOpenChange !== undefined;
+  const isOpen = controlled ? controlledOpen : internalOpen;
+  const setOpen = (open: boolean) => {
+    if (controlled) {
+      onSettingsOpenChange(open);
+    } else {
+      setInternalOpen(open);
+    }
+  };
+
+  useEffect(() => {
+    if (hideFloatingChrome && !controlled) {
+      console.warn('SettingsPanel: hideFloatingChrome is set but modal is not controlled; open the modal from the parent.');
+    }
+  }, [hideFloatingChrome, controlled]);
 
   const modes: { id: SSTVMode; name: string; description: string }[] = [
     {
@@ -55,47 +88,45 @@ export default function SettingsPanel({ currentMode, onModeChange, disabled = fa
 
   return (
     <>
-      {/* MUI Floating Action Button - bottom right */}
-      <Fab
-        color="primary"
-        aria-label="settings"
-        onClick={() => setIsOpen(true)}
-        disabled={disabled}
-        sx={{
-          position: 'fixed',
-          bottom: 24,
-          right: 24,
-          zIndex: 40,
-          backgroundColor: '#238636',
-          '&:hover': {
-            backgroundColor: '#2ea043',
-          },
-          '&.Mui-disabled': {
-            backgroundColor: '#161b22',
-            opacity: 0.5,
-          },
-        }}
-      >
-        <SettingsIcon />
-      </Fab>
+      {!hideFloatingChrome && (
+        <div className="fixed bottom-6 right-6 z-40 flex flex-row-reverse items-end gap-3">
+          <Fab
+            color="primary"
+            aria-label="settings"
+            onClick={() => setOpen(true)}
+            disabled={disabled}
+            sx={{
+              backgroundColor: '#238636',
+              '&:hover': {
+                backgroundColor: '#2ea043',
+              },
+              '&.Mui-disabled': {
+                backgroundColor: 'var(--surface-button)',
+                opacity: 0.5,
+              },
+            }}
+          >
+            <SettingsIcon />
+          </Fab>
+          <ThemeToggle />
+        </div>
+      )}
 
-      {/* Modal overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setOpen(false)}
         >
-          {/* Modal content */}
           <div
-            className="bg-[#161b22] border border-[#30363d] rounded-lg max-w-lg w-full shadow-2xl"
+            className="bg-surface border border-border rounded-lg max-w-lg w-full shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#30363d]">
-              <h2 className="text-xl sm:text-2xl font-semibold text-[#c9d1d9]">Settings</h2>
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border">
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground">Settings</h2>
               <button
-                onClick={() => setIsOpen(false)}
-                className="text-[#8b949e] hover:text-[#c9d1d9] transition-colors"
+                type="button"
+                onClick={() => setOpen(false)}
+                className="text-muted hover:text-foreground transition-colors"
                 aria-label="Close"
               >
                 <svg
@@ -111,35 +142,37 @@ export default function SettingsPanel({ currentMode, onModeChange, disabled = fa
               </button>
             </div>
 
-            {/* Body - scrollable */}
             <div className="p-4 sm:p-6 space-y-4 max-h-[60vh] overflow-y-auto">
               <div>
-                <h3 className="text-sm font-semibold text-[#8b949e] uppercase tracking-wide mb-3">
+                <h3 className="text-sm font-semibold text-muted uppercase tracking-wide mb-3">
                   SSTV Mode
                 </h3>
                 <div className="space-y-2">
                   {modes.map((mode) => (
                     <button
                       key={mode.id}
+                      type="button"
                       onClick={() => {
                         onModeChange(mode.id);
-                        setIsOpen(false);
+                        setOpen(false);
                       }}
                       className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                         currentMode === mode.id
-                          ? 'border-[#238636] bg-[#238636]/10'
-                          : 'border-[#30363d] bg-[#0d1117] hover:border-[#8b949e]'
+                          ? 'border-primary bg-accent-muted'
+                          : 'border-border bg-surface-inset hover:border-muted'
                       }`}
                     >
                       <div className="flex items-start justify-between">
                         <div>
-                          <div className="font-semibold text-[#c9d1d9] mb-1">{mode.name}</div>
-                          <div className="text-sm text-[#8b949e]">{mode.description}</div>
+                          <div className="font-semibold text-foreground mb-1">{mode.name}</div>
+                          {!compact && (
+                            <div className="text-sm text-muted">{mode.description}</div>
+                          )}
                         </div>
                         {currentMode === mode.id && (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-[#238636] flex-shrink-0 mt-0.5"
+                            className="h-5 w-5 text-primary flex-shrink-0 mt-0.5"
                             viewBox="0 0 20 20"
                             fill="currentColor"
                           >
@@ -156,12 +189,11 @@ export default function SettingsPanel({ currentMode, onModeChange, disabled = fa
                 </div>
               </div>
 
-              {/* Info box */}
-              <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-4">
+              <div className="bg-surface-inset border border-border rounded-lg p-4">
                 <div className="flex gap-3">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-[#58a6ff] flex-shrink-0 mt-0.5"
+                    className="h-5 w-5 text-info flex-shrink-0 mt-0.5"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -171,9 +203,9 @@ export default function SettingsPanel({ currentMode, onModeChange, disabled = fa
                       clipRule="evenodd"
                     />
                   </svg>
-                  <div className="text-sm text-[#8b949e]">
+                  <div className="text-sm text-muted">
                     <p>
-                      <strong className="text-[#c9d1d9]">Note:</strong> Changing modes will reset the
+                      <strong className="text-foreground">Note:</strong> Changing modes will reset the
                       current decoding session. Make sure to save your image before switching.
                     </p>
                   </div>
@@ -181,14 +213,14 @@ export default function SettingsPanel({ currentMode, onModeChange, disabled = fa
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="p-4 sm:p-6 border-t border-[#30363d] flex justify-end">
-              <button
-                onClick={() => setIsOpen(false)}
-                className="bg-[#238636] hover:bg-[#2ea043] text-white font-semibold px-4 py-2 rounded-md transition-colors"
-              >
-                Close
-              </button>
+            <div className="p-4 sm:p-6 border-t border-border flex justify-end">
+              <CompactActionButton
+                variant="primary"
+                icon={<IconClose className="h-5 w-5" />}
+                label="Close"
+                onClick={() => setOpen(false)}
+                layout="inline"
+              />
             </div>
           </div>
         </div>

@@ -5,10 +5,10 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 export const metadata: Metadata = {
   metadataBase: new URL("https://sstv-decoder.vercel.app"),
   title: {
-    default: "SSTV Decoder - Real-time Slow Scan Television Decoder",
-    template: "%s | SSTV Decoder",
+    default: "SSTV Tools",
+    template: "%s | SSTV Tools",
   },
-  description: "Free web-based SSTV (Slow Scan Television) decoder supporting Robot36 mode. Decode amateur radio SSTV signals in real-time from your microphone with professional DSP processing. Works on desktop and mobile. Perfect for ham radio enthusiasts and ISS SSTV events.",
+  description: "Web-based SSTV (Slow Scan Television) tools: decode signals from your microphone or audio files, and encode SSTV audio from images. Multiple modes, spectrum view, and export. Works on desktop and mobile for ham radio and ISS SSTV.",
   keywords: [
     "SSTV",
     "Slow Scan Television",
@@ -40,16 +40,16 @@ export const metadata: Metadata = {
   category: "Technology",
   classification: "Radio Communications Software",
   openGraph: {
-    title: "SSTV Decoder - Real-time Slow Scan Television Decoder",
-    description: "Free web-based SSTV decoder for amateur radio enthusiasts. Decode Robot36 SSTV signals in real-time from your microphone. Perfect for ISS SSTV events, ham radio operations, and satellite image reception.",
+    title: "SSTV Tools",
+    description: "Encode and decode amateur radio SSTV signals in the browser: microphone or file decode, image-to-audio encode. Multiple SSTV modes.",
     url: "https://sstv-decoder.vercel.app",
-    siteName: "SSTV Decoder",
+    siteName: "SSTV Tools",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "SSTV Decoder Interface - Real-time Radio Signal Decoding",
+        alt: "SSTV Tools — encoding and decoding Slow Scan Television",
       },
     ],
     locale: "en_US",
@@ -63,11 +63,11 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@smolgroot",
     creator: "@smolgroot",
-    title: "SSTV Decoder - Free Online SSTV Signal Decoder",
-    description: "Decode amateur radio SSTV signals in real-time from your microphone. Supports Robot36 mode. Perfect for ISS SSTV events and ham radio operations.",
+    title: "SSTV Tools",
+    description: "Browser SSTV encoder and decoder: multiple modes, microphone or file input, image export and WAV output.",
     images: {
       url: "/og-image.png",
-      alt: "SSTV Decoder Interface",
+      alt: "SSTV Tools interface",
     },
   },
   verification: {
@@ -92,10 +92,10 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "SSTV Decoder",
+    title: "SSTV Tools",
     startupImage: "/icon-512.png",
   },
-  applicationName: "SSTV Decoder",
+  applicationName: "SSTV Tools",
   formatDetection: {
     telephone: false,
     email: false,
@@ -121,7 +121,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('sstv-theme');if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="antialiased">
         {children}
         <PWAInstallPrompt />

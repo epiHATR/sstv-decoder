@@ -2,15 +2,77 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light theme (default) */
 :root {
-  /* GitHub Dark Theme Colors */
+  --background: #ffffff;
+  --foreground: #1f2328;
+  --border: #d0d7de;
+  --surface: #ffffff;
+  --surface-inset: #f6f8fa;
+  --surface-button: #eff2f5;
+  --surface-button-hover: #e6eaef;
+  --muted: #656d76;
+  --tab-hover: #f3f4f6;
+  --info: #0969da;
+  --primary: #238636;
+  --primary-hover: #2ea043;
+  --danger: #da3633;
+  --danger-hover: #f85149;
+  --warn-bg: rgba(187, 128, 9, 0.12);
+  --warn-border: rgba(187, 128, 9, 0.35);
+  --warn-text: #9a6700;
+  --err-bg: rgba(218, 54, 51, 0.08);
+  --err-border: rgba(248, 81, 73, 0.35);
+  --err-text: #cf222e;
+  --snr-bad: #cf222e;
+  --snr-warn: #9a6700;
+  --snr-good: #1a7f37;
+  --accent-muted: rgba(35, 134, 54, 0.12);
+  --accent-border: rgba(35, 134, 54, 0.35);
+  --accent-text: #1a7f37;
+  --accent-hover-bg: rgba(35, 134, 54, 0.18);
+  --accent-hover-border: rgba(35, 134, 54, 0.45);
+  --viz-canvas: #f6f8fa;
+  --viz-muted: #656d76;
+  --viz-grid: #d0d7de;
+  --viz-line: #2ea043;
+  --viz-fill: rgba(46, 160, 67, 0.28);
+}
+
+html.dark {
   --background: #0d1117;
   --foreground: #c9d1d9;
   --border: #30363d;
+  --surface: #161b22;
+  --surface-inset: #0d1117;
+  --surface-button: #21262d;
+  --surface-button-hover: #30363d;
+  --muted: #8b949e;
+  --tab-hover: rgba(33, 38, 45, 0.5);
+  --info: #58a6ff;
   --primary: #238636;
   --primary-hover: #2ea043;
-  --secondary: #1f6feb;
   --danger: #da3633;
+  --danger-hover: #f85149;
+  --warn-bg: rgba(187, 128, 9, 0.1);
+  --warn-border: rgba(187, 128, 9, 0.3);
+  --warn-text: #e3b341;
+  --err-bg: rgba(218, 54, 51, 0.1);
+  --err-border: rgba(248, 81, 73, 0.3);
+  --err-text: #f85149;
+  --snr-bad: #da3633;
+  --snr-warn: #e3b341;
+  --snr-good: #2ea043;
+  --accent-muted: rgba(35, 134, 54, 0.1);
+  --accent-border: rgba(35, 134, 54, 0.3);
+  --accent-text: #2ea043;
+  --accent-hover-bg: rgba(35, 134, 54, 0.2);
+  --accent-hover-border: rgba(35, 134, 54, 0.5);
+  --viz-canvas: rgb(10, 10, 10);
+  --viz-muted: #8b949e;
+  --viz-grid: #30363d;
+  --viz-line: #2ea043;
+  --viz-fill: rgba(46, 160, 67, 0.3);
 }
 
 body {
