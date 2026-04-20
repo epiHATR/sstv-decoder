@@ -1,0 +1,12 @@
+services:
+  sstv-tools:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sstv-tools:production
+    container_name: sstv-tools
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production

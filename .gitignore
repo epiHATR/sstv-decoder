@@ -49,3 +49,6 @@ robot36/
 .vscode/
 .idea/
 .github/
+
+# local npm cache
+/.npm-cache
